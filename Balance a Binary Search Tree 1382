@@ -1,0 +1,25 @@
+class Solution:
+    def balanceBST(self, root: TreeNode) -> TreeNode:
+        arr = []
+
+        # inorder traversal to get sorted values
+        def inorder(node):
+            if not node:
+                return
+            inorder(node.left)
+            arr.append(node.val)
+            inorder(node.right)
+
+        inorder(root)
+
+        # build balanced BST from sorted array
+        def build(l, r):
+            if l > r:
+                return None
+            mid = (l + r) // 2
+            node = TreeNode(arr[mid])
+            node.left = build(l, mid - 1)
+            node.right = build(mid + 1, r)
+            return node
+
+        return build(0, len(arr) - 1)
