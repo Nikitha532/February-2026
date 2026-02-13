@@ -3,17 +3,65 @@ class Solution:
         n = len(s)
         max_len = 0
         
-        for i in range(n):
-            count = {'a': 0, 'b': 0, 'c': 0}
+        # ----------------------
+        # Case 1: Single character
+        # ----------------------
+        run = 1
+        for i in range(1, n):
+            if s[i] == s[i - 1]:
+                run += 1
+            else:
+                max_len = max(max_len, run)
+                run = 1
+        max_len = max(max_len, run)
+        
+        # ----------------------
+        # Case 2: Exactly two characters
+        # ----------------------
+        from itertools import combinations
+        
+        for x, y in combinations('abc', 2):
+            prefix = {0: -1}
+            diff = 0
+            start = -1
             
-            for j in range(i, n):
-                count[s[j]] += 1
+            for i, ch in enumerate(s):
+                if ch != x and ch != y:
+                    # reset when third character appears
+                    prefix = {0: i}
+                    diff = 0
+                    continue
                 
-                # Get frequencies of characters that appear
-                freqs = [v for v in count.values() if v > 0]
+                if ch == x:
+                    diff += 1
+                else:
+                    diff -= 1
                 
-                # Check if all non-zero frequencies are equal
-                if len(set(freqs)) == 1:
-                    max_len = max(max_len, j - i + 1)
+                if diff in prefix:
+                    max_len = max(max_len, i - prefix[diff])
+                else:
+                    prefix[diff] = i
+        
+        # ----------------------
+        # Case 3: All three characters
+        # ----------------------
+        prefix = {(0, 0): -1}
+        a = b = c = 0
+        
+        for i, ch in enumerate(s):
+            if ch == 'a':
+                a += 1
+            elif ch == 'b':
+                b += 1
+            else:
+                c += 1
+            
+            key = (a - b, a - c)
+            
+            if key in prefix:
+                max_len = max(max_len, i - prefix[key])
+            else:
+                prefix[key] = i
         
         return max_len
+
