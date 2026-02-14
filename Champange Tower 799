@@ -1,0 +1,20 @@
+class Solution:
+    def champagneTower(self, poured: int, query_row: int, query_glass: int) -> float:
+        # Create DP table (100 rows max as per constraints)
+        dp = [[0.0] * (k + 1) for k in range(101)]
+        
+        dp[0][0] = poured
+        
+        for row in range(query_row + 1):
+            for col in range(row + 1):
+                # If overflow happens
+                if dp[row][col] > 1:
+                    overflow = (dp[row][col] - 1) / 2
+                    dp[row][col] = 1  # Glass can only hold 1 cup
+                    
+                    # Pour overflow to next row
+                    dp[row + 1][col] += overflow
+                    dp[row + 1][col + 1] += overflow
+        
+        # Return min(1, value at query position)
+        return min(1, dp[query_row][query_glass])
