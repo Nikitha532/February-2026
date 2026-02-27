@@ -1,0 +1,16 @@
+class Solution:
+    def minOperations(self, s: str, k: int) -> int:
+        zero_count = s.count('0')
+        
+        # If no zeros, no operation needed
+        if zero_count == 0:
+            return 0
+        
+        # Try possible operations
+        for x in range(1, len(s) + 1):
+            total_flips = x * k
+            
+            if total_flips >= zero_count and (total_flips - zero_count) % 2 == 0:
+                return x
+        
+        return -1
